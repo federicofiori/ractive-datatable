@@ -60,7 +60,7 @@ Will render every row in the "timestamp" column with the passed in partial (in t
 
 ### Properties
 
-##### `data` 
+##### `data`
 Array of Objects where each key is a column
 
 ##### `editable`
@@ -70,21 +70,21 @@ globally allow/disallow editing
 A string to filter the rows on. Searches through all cells with a case-insensitive RegEx and displays only rows that match. Cells with matches are highlighted.
 
 ##### `dynamicColumns`
-If `true` (default), searches the entire `data` array looking for columns. 
+If `true` (default), searches the entire `data` array looking for columns.
 If `false`, columns must be explicitly provided through the `columns` property.
 If you have a large number of rows this should be turned off for performance, but you will have to explicitly provide columns via the `columns` object.
 
 ##### `columns`
 Determines the ordering of the columns and configuration for specific columns.
-           
+
 Each key on this object refers to column names. Configurable properties are `edit`,
  `display`, `header` & `order`. Key/column names are case-sensitive.
 
-Example: 
+Example:
 
 ```
 columns: {
-    'name': {order: 0}, // `order` "bumps" the column, lowest value is left most. 
+    'name': {order: 0}, // `order` "bumps" the column, lowest value is left most.
     'created': {edit: false},
     'someAnnoyinglyNamedThingFromThatCoworkerThatDrivesYouNuts': {header: 'Nicer Name'},
     'id': {edit: false},
@@ -133,13 +133,13 @@ Go to the specified page
 
 ```
 this.on('dataedited', function(row, field) {
-    
+
     var change = {};
     change.id = row.id;
     change[field] = row[field];
-    
+
     changes.push(change);
-    
+
 });
 ```
 
@@ -147,4 +147,10 @@ For other events you probably would be better off using Ractive's observers on y
 
 Open to PRs and stuff. I'm around.
 
+### New Release
 
+For build new release:
+
+```
+    grunt
+```
