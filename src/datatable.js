@@ -30,6 +30,7 @@ var DataTable = Ractive.extend({
 
             selectionMode: '', // "row" or "cell"
 
+            multipleSelection: false, // true or false, enable or disable multiple row selection
 
             /**
              * @name dynamicColumns
@@ -396,6 +397,7 @@ var DataTable = Ractive.extend({
 
         var _selection = this.get('_selection');
         var _lastSelected = this.get('_lastSelected');
+        var multipleSelection = this.get('multipleSelection');
 
         if(details.context)
             row = details.context.index;
@@ -409,7 +411,7 @@ var DataTable = Ractive.extend({
         if(!isNumber(row))
             return;
 
-        if(event.shiftKey && _lastSelected) {
+        if(multipleSelection && event.shiftKey && _lastSelected) {
 
             var min = Math.min(_lastSelected, row);
             var max = Math.max(_lastSelected, row);
@@ -418,8 +420,8 @@ var DataTable = Ractive.extend({
                 _selection.push(c);
             }
 
-        } else if(event.ctrlKey || event.metaKey || event.altKey ||
-            (_selection.length === 1 && _selection[0] === row)) {
+        } else if(multipleSelection && (event.ctrlKey || event.metaKey || event.altKey ||
+            (_selection.length === 1 && _selection[0] === row))) {
 
             var index = _selection.indexOf(row);
 
