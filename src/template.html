@@ -1,6 +1,6 @@
 
 <div class='ractive-datatable {{class}}' id='{{id}}' style='{{style}}'>
-    <div class='scroll'>
+    <div class='scroll' id="scroll-table-{{id}}">
         <table>
             <thead class='{{sortable ? "sortable" : ""}}'>
                 {{#cols}}
@@ -30,7 +30,7 @@
             </tbody>
         </table>
     </div>
-    <div class='footer'>
+    <div class='footer' id="footer-table-{{id}}">
         Displaying {{current}} of {{total}}
         {{#if pages}}
         <span class='pagination'>
@@ -57,4 +57,3 @@
         {{/if}}
     </div>
 </div>
-

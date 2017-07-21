@@ -96,6 +96,8 @@ columns: {
 
 If `dynamicColumns` is `false`, only columns configured here will display.
 
+If `multipleSelection` is `false`, is possible select only one row.
+
 ##### `selectionMode`
 Either `row` or `cell` (WIP). Allows for rows to be selected on click
 
