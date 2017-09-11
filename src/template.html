@@ -1,7 +1,7 @@
 
 <div class='ractive-datatable {{class}}' id='{{id}}' style='{{style}}'>
     <div class='scroll' id="scroll-table-{{id}}">
-        <table>
+        <table id='table-{{id}}'>
             <thead class='{{sortable ? "sortable" : ""}}'>
                 {{#cols}}
                     <th {{#if sortOn === this}}class='sort {{sortMode}}'{{/if}} on-click='setSort(this)'>{{columns && columns[this] && columns[this].header ? columns[this].header : this}}</th>

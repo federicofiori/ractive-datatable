@@ -52,14 +52,14 @@ return /******/ (function(modules) { // webpackBootstrap
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__(1);
 
 
-/***/ },
+/***/ }),
 /* 1 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	
 	__webpack_require__(2);
@@ -93,6 +93,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	            selectionMode: '', // "row" or "cell"
 
+	            multipleSelection: false, // true or false, enable or disable multiple row selection
 
 	            /**
 	             * @name dynamicColumns
@@ -114,11 +115,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	             * Each key on this object refers to column names. Configurable properties are `edit`,
 	             * `display` & `order`. Keys and column names are case-sensitive.
 	             *
-	             * Example: 
+	             * Example:
 	             *
 	             *  ```
 	             *  columns: {
-	             *      'name': {order: 0}, // `order` "bumps" the column, lowest value is left most. 
+	             *      'name': {order: 0}, // `order` "bumps" the column, lowest value is left most.
 	             *      'created': {edit: false},
 	             *      'id': {edit: false},
 	             *      'hiddenField': {display: false},
@@ -412,9 +413,26 @@ return /******/ (function(modules) { // webpackBootstrap
 	            self.set('selection', _selection.map(function(v) {
 	                return data[v];
 	            }));
-	            
+
 	        });
 
+	        self.observe('_data', function(newDataset) {
+	          var selected = self.get('selection');
+	          // Check if selected value are yet presents in the new datasets
+	          // If is not present, remove it from selection
+	          var updateSelectedIndex = [];
+	          for(var i=0; i<selected.length; i++) {
+	            // Check if selected item is already present in newDataset
+	            for(var j=0; j<newDataset.length; j++) {
+	              if(JSON.stringify(selected[i]===JSON.stringify(newDataset[j]))) {
+	                // Is present in the new dataset
+	                updateSelectedIndex.push(i);
+	                break;
+	              }
+	            }
+	          }
+	          self.set('_selection', updateSelectedIndex);
+	        })
 	    },
 
 	    fieldedited: function(context) {
@@ -459,6 +477,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        var _selection = this.get('_selection');
 	        var _lastSelected = this.get('_lastSelected');
+	        var multipleSelection = this.get('multipleSelection');
 
 	        if(details.context)
 	            row = details.context.index;
@@ -472,7 +491,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if(!isNumber(row))
 	            return;
 
-	        if(event.shiftKey && _lastSelected) {
+	        if(multipleSelection && event.shiftKey && _lastSelected) {
 
 	            var min = Math.min(_lastSelected, row);
 	            var max = Math.max(_lastSelected, row);
@@ -481,8 +500,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	                _selection.push(c);
 	            }
 
-	        } else if(event.ctrlKey || event.metaKey || event.altKey ||
-	            (_selection.length === 1 && _selection[0] === row)) {
+	        } else if(multipleSelection && (event.ctrlKey || event.metaKey || event.altKey ||
+	            (_selection.length === 1 && _selection[0] === row))) {
 
 	            var index = _selection.indexOf(row);
 
@@ -504,7 +523,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        clearSelection();
 	    },
-	    
+
 	    selectCell: function(details) {
 
 	        var mode = this.get('selectionMode');
@@ -575,9 +594,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = DataTable;
 
 
-/***/ },
+/***/ }),
 /* 2 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
@@ -591,8 +610,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	if(false) {
 		// When the styles change, update the <style> tags
 		if(!content.locals) {
-			module.hot.accept("!!./../../../../Applications/lib/node_modules/css-loader/index.js!./../node_modules/stylus-loader/index.js!./styles.styl", function() {
-				var newContent = require("!!./../../../../Applications/lib/node_modules/css-loader/index.js!./../node_modules/stylus-loader/index.js!./styles.styl");
+			module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/stylus-loader/index.js!./styles.styl", function() {
+				var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/stylus-loader/index.js!./styles.styl");
 				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 				update(newContent);
 			});
@@ -601,9 +620,9 @@ return /******/ (function(modules) { // webpackBootstrap
 		module.hot.dispose(function() { update(); });
 	}
 
-/***/ },
+/***/ }),
 /* 3 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(4)();
 	// imports
@@ -615,9 +634,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	// exports
 
 
-/***/ },
+/***/ }),
 /* 4 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	/*
 		MIT License http://www.opensource.org/licenses/mit-license.php
@@ -671,9 +690,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 
-/***/ },
+/***/ }),
 /* 5 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	/*
 		MIT License http://www.opensource.org/licenses/mit-license.php
@@ -923,9 +942,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 
-/***/ },
+/***/ }),
 /* 6 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	/**
 	 * @description 
@@ -980,9 +999,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = sortBy;
 
 
-/***/ },
+/***/ }),
 /* 7 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	var baseUniq = __webpack_require__(8);
 
@@ -1011,9 +1030,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = uniq;
 
 
-/***/ },
+/***/ }),
 /* 8 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	var SetCache = __webpack_require__(9),
 	    arrayIncludes = __webpack_require__(50),
@@ -1089,9 +1108,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = baseUniq;
 
 
-/***/ },
+/***/ }),
 /* 9 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	var MapCache = __webpack_require__(10),
 	    setCacheAdd = __webpack_require__(48),
@@ -1122,9 +1141,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = SetCache;
 
 
-/***/ },
+/***/ }),
 /* 10 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	var mapCacheClear = __webpack_require__(11),
 	    mapCacheDelete = __webpack_require__(42),
@@ -1160,9 +1179,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = MapCache;
 
 
-/***/ },
+/***/ }),
 /* 11 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	var Hash = __webpack_require__(12),
 	    ListCache = __webpack_require__(33),
@@ -1187,9 +1206,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = mapCacheClear;
 
 
-/***/ },
+/***/ }),
 /* 12 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	var hashClear = __webpack_require__(13),
 	    hashDelete = __webpack_require__(29),
@@ -1225,9 +1244,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = Hash;
 
 
-/***/ },
+/***/ }),
 /* 13 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	var nativeCreate = __webpack_require__(14);
 
@@ -1246,9 +1265,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = hashClear;
 
 
-/***/ },
+/***/ }),
 /* 14 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	var getNative = __webpack_require__(15);
 
@@ -1258,9 +1277,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = nativeCreate;
 
 
-/***/ },
+/***/ }),
 /* 15 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	var baseIsNative = __webpack_require__(16),
 	    getValue = __webpack_require__(28);
@@ -1281,9 +1300,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = getNative;
 
 
-/***/ },
+/***/ }),
 /* 16 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	var isFunction = __webpack_require__(17),
 	    isMasked = __webpack_require__(25),
@@ -1334,9 +1353,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = baseIsNative;
 
 
-/***/ },
+/***/ }),
 /* 17 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	var baseGetTag = __webpack_require__(18),
 	    isObject = __webpack_require__(24);
@@ -1377,9 +1396,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = isFunction;
 
 
-/***/ },
+/***/ }),
 /* 18 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	var Symbol = __webpack_require__(19),
 	    getRawTag = __webpack_require__(22),
@@ -1411,9 +1430,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = baseGetTag;
 
 
-/***/ },
+/***/ }),
 /* 19 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	var root = __webpack_require__(20);
 
@@ -1423,9 +1442,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = Symbol;
 
 
-/***/ },
+/***/ }),
 /* 20 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	var freeGlobal = __webpack_require__(21);
 
@@ -1438,9 +1457,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = root;
 
 
-/***/ },
+/***/ }),
 /* 21 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** Detect free variable `global` from Node.js. */
 	var freeGlobal = typeof global == 'object' && global && global.Object === Object && global;
@@ -1449,9 +1468,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
-/***/ },
+/***/ }),
 /* 22 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	var Symbol = __webpack_require__(19);
 
@@ -1501,9 +1520,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = getRawTag;
 
 
-/***/ },
+/***/ }),
 /* 23 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	/** Used for built-in method references. */
 	var objectProto = Object.prototype;
@@ -1529,9 +1548,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = objectToString;
 
 
-/***/ },
+/***/ }),
 /* 24 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	/**
 	 * Checks if `value` is the
@@ -1566,9 +1585,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = isObject;
 
 
-/***/ },
+/***/ }),
 /* 25 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	var coreJsData = __webpack_require__(26);
 
@@ -1592,9 +1611,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = isMasked;
 
 
-/***/ },
+/***/ }),
 /* 26 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	var root = __webpack_require__(20);
 
@@ -1604,9 +1623,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = coreJsData;
 
 
-/***/ },
+/***/ }),
 /* 27 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	/** Used for built-in method references. */
 	var funcProto = Function.prototype;
@@ -1636,9 +1655,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = toSource;
 
 
-/***/ },
+/***/ }),
 /* 28 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	/**
 	 * Gets the value at `key` of `object`.
@@ -1655,9 +1674,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = getValue;
 
 
-/***/ },
+/***/ }),
 /* 29 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	/**
 	 * Removes `key` and its value from the hash.
@@ -1678,9 +1697,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = hashDelete;
 
 
-/***/ },
+/***/ }),
 /* 30 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	var nativeCreate = __webpack_require__(14);
 
@@ -1714,9 +1733,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = hashGet;
 
 
-/***/ },
+/***/ }),
 /* 31 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	var nativeCreate = __webpack_require__(14);
 
@@ -1743,9 +1762,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = hashHas;
 
 
-/***/ },
+/***/ }),
 /* 32 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	var nativeCreate = __webpack_require__(14);
 
@@ -1772,9 +1791,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = hashSet;
 
 
-/***/ },
+/***/ }),
 /* 33 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	var listCacheClear = __webpack_require__(34),
 	    listCacheDelete = __webpack_require__(35),
@@ -1810,9 +1829,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = ListCache;
 
 
-/***/ },
+/***/ }),
 /* 34 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	/**
 	 * Removes all key-value entries from the list cache.
@@ -1829,9 +1848,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = listCacheClear;
 
 
-/***/ },
+/***/ }),
 /* 35 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	var assocIndexOf = __webpack_require__(36);
 
@@ -1870,9 +1889,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = listCacheDelete;
 
 
-/***/ },
+/***/ }),
 /* 36 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	var eq = __webpack_require__(37);
 
@@ -1897,9 +1916,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = assocIndexOf;
 
 
-/***/ },
+/***/ }),
 /* 37 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	/**
 	 * Performs a
@@ -1940,9 +1959,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = eq;
 
 
-/***/ },
+/***/ }),
 /* 38 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	var assocIndexOf = __webpack_require__(36);
 
@@ -1965,9 +1984,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = listCacheGet;
 
 
-/***/ },
+/***/ }),
 /* 39 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	var assocIndexOf = __webpack_require__(36);
 
@@ -1987,9 +2006,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = listCacheHas;
 
 
-/***/ },
+/***/ }),
 /* 40 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	var assocIndexOf = __webpack_require__(36);
 
@@ -2019,9 +2038,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = listCacheSet;
 
 
-/***/ },
+/***/ }),
 /* 41 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	var getNative = __webpack_require__(15),
 	    root = __webpack_require__(20);
@@ -2032,9 +2051,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = Map;
 
 
-/***/ },
+/***/ }),
 /* 42 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	var getMapData = __webpack_require__(43);
 
@@ -2056,9 +2075,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = mapCacheDelete;
 
 
-/***/ },
+/***/ }),
 /* 43 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	var isKeyable = __webpack_require__(44);
 
@@ -2080,9 +2099,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = getMapData;
 
 
-/***/ },
+/***/ }),
 /* 44 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	/**
 	 * Checks if `value` is suitable for use as unique object key.
@@ -2101,9 +2120,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = isKeyable;
 
 
-/***/ },
+/***/ }),
 /* 45 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	var getMapData = __webpack_require__(43);
 
@@ -2123,9 +2142,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = mapCacheGet;
 
 
-/***/ },
+/***/ }),
 /* 46 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	var getMapData = __webpack_require__(43);
 
@@ -2145,9 +2164,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = mapCacheHas;
 
 
-/***/ },
+/***/ }),
 /* 47 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	var getMapData = __webpack_require__(43);
 
@@ -2173,9 +2192,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = mapCacheSet;
 
 
-/***/ },
+/***/ }),
 /* 48 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	/** Used to stand-in for `undefined` hash values. */
 	var HASH_UNDEFINED = '__lodash_hash_undefined__';
@@ -2198,9 +2217,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = setCacheAdd;
 
 
-/***/ },
+/***/ }),
 /* 49 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	/**
 	 * Checks if `value` is in the array cache.
@@ -2218,9 +2237,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = setCacheHas;
 
 
-/***/ },
+/***/ }),
 /* 50 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	var baseIndexOf = __webpack_require__(51);
 
@@ -2241,9 +2260,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = arrayIncludes;
 
 
-/***/ },
+/***/ }),
 /* 51 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	var baseFindIndex = __webpack_require__(52),
 	    baseIsNaN = __webpack_require__(53),
@@ -2267,9 +2286,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = baseIndexOf;
 
 
-/***/ },
+/***/ }),
 /* 52 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	/**
 	 * The base implementation of `_.findIndex` and `_.findLastIndex` without
@@ -2297,9 +2316,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = baseFindIndex;
 
 
-/***/ },
+/***/ }),
 /* 53 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	/**
 	 * The base implementation of `_.isNaN` without support for number objects.
@@ -2315,9 +2334,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = baseIsNaN;
 
 
-/***/ },
+/***/ }),
 /* 54 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	/**
 	 * A specialized version of `_.indexOf` which performs strict equality
@@ -2344,9 +2363,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = strictIndexOf;
 
 
-/***/ },
+/***/ }),
 /* 55 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	/**
 	 * This function is like `arrayIncludes` except that it accepts a comparator.
@@ -2372,9 +2391,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = arrayIncludesWith;
 
 
-/***/ },
+/***/ }),
 /* 56 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	/**
 	 * Checks if a `cache` value for `key` exists.
@@ -2391,9 +2410,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = cacheHas;
 
 
-/***/ },
+/***/ }),
 /* 57 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	var Set = __webpack_require__(58),
 	    noop = __webpack_require__(59),
@@ -2416,9 +2435,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = createSet;
 
 
-/***/ },
+/***/ }),
 /* 58 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	var getNative = __webpack_require__(15),
 	    root = __webpack_require__(20);
@@ -2429,9 +2448,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = Set;
 
 
-/***/ },
+/***/ }),
 /* 59 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	/**
 	 * This method returns `undefined`.
@@ -2452,9 +2471,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = noop;
 
 
-/***/ },
+/***/ }),
 /* 60 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	/**
 	 * Converts `set` to an array of its values.
@@ -2476,9 +2495,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = setToArray;
 
 
-/***/ },
+/***/ }),
 /* 61 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	/**
 	 * Checks if `value` is `undefined`.
@@ -2504,9 +2523,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = isUndefined;
 
 
-/***/ },
+/***/ }),
 /* 62 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	var baseGetTag = __webpack_require__(18),
 	    isObjectLike = __webpack_require__(63);
@@ -2548,9 +2567,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = isNumber;
 
 
-/***/ },
+/***/ }),
 /* 63 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	/**
 	 * Checks if `value` is object-like. A value is object-like if it's not `null`
@@ -2583,19 +2602,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = isObjectLike;
 
 
-/***/ },
+/***/ }),
 /* 64 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
-	module.exports={"v":4,"t":[{"t":7,"e":"div","m":[{"n":"class","f":["ractive-datatable ",{"t":2,"r":"class"}],"t":13},{"n":"id","f":[{"t":2,"r":"id"}],"t":13},{"n":"style","f":[{"t":2,"r":"style"}],"t":13}],"f":[{"t":4,"f":[{"t":7,"e":"div","m":[{"n":"class","f":"scroll","t":13}],"f":[{"t":7,"e":"table","f":[{"t":7,"e":"thead","m":[{"n":"class","f":[{"t":2,"x":{"r":["sortable"],"s":"_0?\"sortable\":\"\""}}],"t":13}],"f":[{"t":4,"f":[{"t":7,"e":"th","m":[{"t":4,"f":[{"n":"class","f":["sort ",{"t":2,"r":"sortMode"}],"t":13}],"n":50,"x":{"r":["sortOn","."],"s":"_0===_1"}},{"n":"click","f":{"x":{"r":["@this","."],"s":"[_0.setSort(_1)]"}},"t":70}],"f":[{"t":2,"x":{"r":["columns","."],"s":"_0&&_0[_1]&&_0[_1].header?_0[_1].header:_1"}}]}],"r":"cols"}]}," ",{"t":7,"e":"tbody","f":[{"t":4,"f":[{"t":7,"e":"tr","m":[{"t":4,"f":[{"n":"class","f":"selected","t":13}],"n":50,"x":{"r":["selectionMode","_selection","index"],"s":"_0==\"row\"&&_1.indexOf(_2)!==-1"}},{"n":"click","f":{"x":{"r":["@this","event"],"s":"[_0.selectRow(_1)]"}},"t":70},{"n":"index","f":[{"t":2,"r":"index"}],"t":13}],"f":[{"t":4,"f":[{"t":4,"f":[{"t":7,"e":"td","m":[{"n":"class","f":"editing","t":13}],"f":[{"t":7,"e":"input","m":[{"n":"value","f":[{"t":2,"rx":{"r":"rows","m":[{"t":30,"n":"r"},"item",{"t":30,"n":"."}]}}],"t":13},{"n":"blur-keyup","f":{"x":{"r":["@this","event"],"s":"[_0.fieldedited(_1)]"}},"t":70},{"f":"false","t":73,"v":"t"}]}]}],"n":50,"x":{"r":["editable","can",".","rows","editing","r","c"],"s":"_0&&_1(\"edit\",_2,_3[_5].item)&&_4==_5+\"-\"+_6"}},{"t":4,"n":51,"f":[{"t":7,"e":"td","m":[{"n":"class","f":[{"t":2,"r":"."}],"t":13},{"n":"dblclick","f":{"x":{"r":["@this","r","c"],"s":"[_0.set(\"editing\",_1+\"-\"+_2)]"}},"t":70},{"t":4,"f":[{"n":"class","f":"selected","t":13}],"n":50,"x":{"r":["selectionMode","c","index","selection"],"s":"_0==\"cell\"&&_3[_2]&&_3[_2][_1]"}},{"n":"click","f":{"x":{"r":["@this","event"],"s":"[_0.selectCell(_1)]"}},"t":70}],"f":[{"t":4,"f":[{"t":4,"n":53,"f":[{"t":8,"x":{"r":["cellFor","c","cols"],"s":"_0(_2[_1])"}}],"x":{"r":[".","r","rows"],"s":"_2[_1].item[_0]||_2[_1].item"}}],"n":50,"x":{"r":["r","rows"],"s":"_1[_0]&&_1[_0].item"}}]}],"l":1}],"i":"c","r":"cols"}]}],"i":"r","r":"rows"}]}]}]}," ",{"t":7,"e":"div","m":[{"n":"class","f":"footer","t":13}],"f":["Displaying ",{"t":2,"r":"current"}," of ",{"t":2,"r":"total"}," ",{"t":4,"f":[{"t":7,"e":"span","m":[{"n":"class","f":"pagination","t":13}],"f":[{"t":4,"f":[{"t":7,"e":"span","m":[{"n":"class","f":"disabled","t":13}],"f":["Previous"]}],"n":50,"r":"onFirstPage"},{"t":4,"n":51,"f":[{"t":7,"e":"a","m":[{"n":"click","f":{"x":{"r":["@this"],"s":"[_0.previousPage()]"}},"t":70}],"f":["Previous"]}],"l":1}," ",{"t":7,"e":"span","m":[{"n":"class","f":"pages","t":13}],"f":[{"t":4,"f":[{"t":7,"e":"a","m":[{"n":"click","f":{"x":{"r":["@this","."],"s":"[_0.gotoPage(_1)]"}},"t":70},{"n":"class","f":[{"t":2,"x":{"r":["page","."],"s":"_0==_1?\"active\":\"\""}}],"t":13}],"f":[{"t":2,"r":"."}]}],"r":"pages"}]}," ",{"t":4,"f":[{"t":7,"e":"span","m":[{"n":"class","f":"disabled","t":13}],"f":["Next"]}],"n":50,"r":"onLastPage"},{"t":4,"n":51,"f":[{"t":7,"e":"a","m":[{"n":"click","f":{"x":{"r":["@this"],"s":"[_0.nextPage()]"}},"t":70}],"f":["Next"]}],"l":1}]}],"n":50,"r":"pages"}]}],"n":50,"r":"data"}]}],"e":{}};
+	module.exports={"v":4,"t":[{"t":7,"e":"div","m":[{"n":"class","f":["ractive-datatable ",{"t":2,"r":"class"}],"t":13},{"n":"id","f":[{"t":2,"r":"id"}],"t":13},{"n":"style","f":[{"t":2,"r":"style"}],"t":13}],"f":[{"t":7,"e":"div","m":[{"n":"class","f":"scroll","t":13},{"n":"id","f":["scroll-table-",{"t":2,"r":"id"}],"t":13}],"f":[{"t":7,"e":"table","m":[{"n":"id","f":["table-",{"t":2,"r":"id"}],"t":13}],"f":[{"t":7,"e":"thead","m":[{"n":"class","f":[{"t":2,"x":{"r":["sortable"],"s":"_0?\"sortable\":\"\""}}],"t":13}],"f":[{"t":4,"f":[{"t":7,"e":"th","m":[{"t":4,"f":[{"n":"class","f":["sort ",{"t":2,"r":"sortMode"}],"t":13}],"n":50,"x":{"r":["sortOn","."],"s":"_0===_1"}},{"n":"click","f":{"x":{"r":["@this","."],"s":"[_0.setSort(_1)]"}},"t":70}],"f":[{"t":2,"x":{"r":["columns","."],"s":"_0&&_0[_1]&&_0[_1].header?_0[_1].header:_1"}}]}],"r":"cols"}]}," ",{"t":7,"e":"tbody","f":[{"t":4,"f":[{"t":7,"e":"tr","m":[{"t":4,"f":[{"n":"class","f":"selected","t":13}],"n":50,"x":{"r":["selectionMode","_selection","index"],"s":"_0==\"row\"&&_1.indexOf(_2)!==-1"}},{"n":"click","f":{"x":{"r":["@this","event"],"s":"[_0.selectRow(_1)]"}},"t":70},{"n":"index","f":[{"t":2,"r":"index"}],"t":13}],"f":[{"t":4,"f":[{"t":4,"f":[{"t":7,"e":"td","m":[{"n":"class","f":"editing","t":13}],"f":[{"t":7,"e":"input","m":[{"n":"value","f":[{"t":2,"rx":{"r":"rows","m":[{"t":30,"n":"r"},"item",{"t":30,"n":"."}]}}],"t":13},{"n":"blur-keyup","f":{"x":{"r":["@this","event"],"s":"[_0.fieldedited(_1)]"}},"t":70},{"f":"false","t":73,"v":"t"}]}]}],"n":50,"x":{"r":["editable","can",".","rows","editing","r","c"],"s":"_0&&_1(\"edit\",_2,_3[_5].item)&&_4==_5+\"-\"+_6"}},{"t":4,"n":51,"f":[{"t":7,"e":"td","m":[{"n":"class","f":[{"t":2,"r":"."}],"t":13},{"n":"dblclick","f":{"x":{"r":["@this","r","c"],"s":"[_0.set(\"editing\",_1+\"-\"+_2)]"}},"t":70},{"t":4,"f":[{"n":"class","f":"selected","t":13}],"n":50,"x":{"r":["selectionMode","c","index","selection"],"s":"_0==\"cell\"&&_3[_2]&&_3[_2][_1]"}},{"n":"click","f":{"x":{"r":["@this","event"],"s":"[_0.selectCell(_1)]"}},"t":70}],"f":[{"t":4,"f":[{"t":4,"n":53,"f":[{"t":8,"x":{"r":["cellFor","c","cols"],"s":"_0(_2[_1])"}}],"x":{"r":[".","r","rows"],"s":"_2[_1].item[_0]||_2[_1].item"}}],"n":50,"x":{"r":["r","rows"],"s":"_1[_0]&&_1[_0].item"}}]}],"l":1}],"i":"c","r":"cols"}]}],"i":"r","r":"rows"}]}]}]}," ",{"t":7,"e":"div","m":[{"n":"class","f":"footer","t":13},{"n":"id","f":["footer-table-",{"t":2,"r":"id"}],"t":13}],"f":["Displaying ",{"t":2,"r":"current"}," of ",{"t":2,"r":"total"}," ",{"t":4,"f":[{"t":7,"e":"span","m":[{"n":"class","f":"pagination","t":13}],"f":[{"t":4,"f":[{"t":7,"e":"span","m":[{"n":"class","f":"disabled","t":13}],"f":["Previous"]}],"n":50,"r":"onFirstPage"},{"t":4,"n":51,"f":[{"t":7,"e":"a","m":[{"n":"click","f":{"x":{"r":["@this"],"s":"[_0.previousPage()]"}},"t":70}],"f":["Previous"]}],"l":1}," ",{"t":7,"e":"span","m":[{"n":"class","f":"pages","t":13}],"f":[{"t":4,"f":[{"t":7,"e":"a","m":[{"n":"click","f":{"x":{"r":["@this","."],"s":"[_0.gotoPage(_1)]"}},"t":70},{"n":"class","f":[{"t":2,"x":{"r":["page","."],"s":"_0==_1?\"active\":\"\""}}],"t":13}],"f":[{"t":2,"r":"."}]}],"r":"pages"}]}," ",{"t":4,"f":[{"t":7,"e":"span","m":[{"n":"class","f":"disabled","t":13}],"f":["Next"]}],"n":50,"r":"onLastPage"},{"t":4,"n":51,"f":[{"t":7,"e":"a","m":[{"n":"click","f":{"x":{"r":["@this"],"s":"[_0.nextPage()]"}},"t":70}],"f":["Next"]}],"l":1}]}],"n":50,"r":"pages"}]}]}],"e":{}};
 
-/***/ },
+/***/ }),
 /* 65 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	module.exports={"v":4,"t":[{"t":3,"x":{"r":["highlight","."],"s":"_0(_1)"}}],"e":{}};
 
-/***/ }
+/***/ })
 /******/ ])
 });
 ;

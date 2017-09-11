@@ -353,6 +353,23 @@ var DataTable = Ractive.extend({
             
         });
 
+        self.observe('_data', function(newDataset) {
+          var selected = self.get('selection');
+          // Check if selected value are yet presents in the new datasets
+          // If is not present, remove it from selection
+          var updateSelectedIndex = [];
+          for(var i=0; i<selected.length; i++) {
+            // Check if selected item is already present in newDataset
+            for(var j=0; j<newDataset.length; j++) {
+              if(JSON.stringify(selected[i]===JSON.stringify(newDataset[j]))) {
+                // Is present in the new dataset
+                updateSelectedIndex.push(i);
+                break;
+              }
+            }
+          }
+          self.set('_selection', updateSelectedIndex);
+        })
     },
 
     fieldedited: function(context) {
